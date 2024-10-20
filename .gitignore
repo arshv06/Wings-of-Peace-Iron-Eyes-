@@ -1,0 +1,40 @@
+# Ignore temp files, build results, and other files we don't want to push to GitHub
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+
+# Ignore auto-generated VS/MD/VSCode files
+.vscode/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# TextMeshPro Generated Files
+[Tt]ext[Mm]esh[Pp]ro/
+
+# Ignore compiled files
+*.dll
+*.exe
+*.apk
+*.jar
+*.so
+*.dylib
+*.iso
+*.tar.gz
+*.zip
+
+# Ignore crash reports, debug logs, and compiled project files
+sysinfo.txt
