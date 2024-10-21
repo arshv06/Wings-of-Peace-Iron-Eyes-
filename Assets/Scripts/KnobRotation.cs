@@ -1,24 +1,25 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;  // For LED-style display text
+using TMPro;
 
 public class KnobRotation : MonoBehaviour
 {
-    public RectTransform knobX;  // Reference to the knob for X-coordinate
-    public RectTransform knobY;  // Reference to the knob for Y-coordinate
-    public TextMeshProUGUI xDisplay;  // LED-style display for X-coordinate
-    public TextMeshProUGUI yDisplay;  // LED-style display for Y-coordinate
+    public RectTransform knobX;  // Reference to the X knob RectTransform
+    public RectTransform knobY;  // Reference to the Y knob RectTransform
+    public TextMeshProUGUI xDisplay;  // LED-style display for X value
+    public TextMeshProUGUI yDisplay;  // LED-style display for Y value
+    public RectTransform crosshair;  // The crosshair to move on the map
+    public RectTransform map;  // The map on which the crosshair moves
 
-    public float minAngle = -135f;  // Minimum rotation angle for the knob
-    public float maxAngle = 135f;   // Maximum rotation angle for the knob
-    public int minCoordinate = -5;  // Minimum X or Y coordinate value
-    public int maxCoordinate = 5;   // Maximum X or Y coordinate value
+    private float minAngle = -135f;  // Minimum rotation angle of the knob
+    private float maxAngle = 135f;   // Maximum rotation angle of the knob
+    private int minCoordinate = -9;  // Change this to -9
+    private int maxCoordinate = 9;   // Change this to +9
 
-    private bool isRotatingX = false;  // Tracks if the X knob is being rotated
-    private bool isRotatingY = false;  // Tracks if the Y knob is being rotated
+    private bool isRotatingX = false;  // Whether the X knob is being rotated
+    private bool isRotatingY = false;  // Whether the Y knob is being rotated
 
-    private float currentAngleX = 0f;  // Current rotation angle of the X knob
-    private float currentAngleY = 0f;  // Current rotation angle of the Y knob
+    private float currentAngleX = 0f;  // Current rotation angle of X knob
+    private float currentAngleY = 0f;  // Current rotation angle of Y knob
 
     void Update()
     {
@@ -27,7 +28,8 @@ public class KnobRotation : MonoBehaviour
         {
             currentAngleX = RotateKnob(knobX, currentAngleX);
             int xCoordinate = CalculateCoordinate(currentAngleX);
-            xDisplay.text = xCoordinate.ToString();  // Update the X coordinate display
+            xDisplay.text = xCoordinate.ToString();  // Update the X display
+            UpdateCrosshairPosition(xCoordinate, yCoordinate: null);  // Update crosshair X
         }
 
         // Handle Y knob rotation
@@ -35,49 +37,67 @@ public class KnobRotation : MonoBehaviour
         {
             currentAngleY = RotateKnob(knobY, currentAngleY);
             int yCoordinate = CalculateCoordinate(currentAngleY);
-            yDisplay.text = yCoordinate.ToString();  // Update the Y coordinate display
+            yDisplay.text = yCoordinate.ToString();  // Update the Y display
+            UpdateCrosshairPosition(xCoordinate: null, yCoordinate);  // Update crosshair Y
         }
     }
 
-    // Method to detect if the X knob is being rotated (on mouse down or touch)
+    // Method to detect if the X knob is being rotated (on pointer down)
     public void StartRotateX()
     {
         isRotatingX = true;
     }
 
-    // Method to stop rotating the X knob (on mouse up or release)
+    // Method to stop rotating the X knob (on pointer up)
     public void StopRotateX()
     {
         isRotatingX = false;
     }
 
-    // Method to detect if the Y knob is being rotated (on mouse down or touch)
+    // Method to detect if the Y knob is being rotated (on pointer down)
     public void StartRotateY()
     {
         isRotatingY = true;
     }
 
-    // Method to stop rotating the Y knob (on mouse up or release)
+    // Method to stop rotating the Y knob (on pointer up)
     public void StopRotateY()
     {
         isRotatingY = false;
     }
 
-    // Method to handle knob rotation
+    // Rotate the knob and return the updated angle
     private float RotateKnob(RectTransform knob, float currentAngle)
     {
         Vector2 direction = Input.mousePosition - knob.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        float clampedAngle = Mathf.Clamp(angle, minAngle, maxAngle);  // Limit the rotation angle
-
-        knob.rotation = Quaternion.Euler(0, 0, clampedAngle);  // Apply the rotation
+        float clampedAngle = Mathf.Clamp(angle, minAngle, maxAngle);  // Limit rotation to range
+        knob.rotation = Quaternion.Euler(0, 0, clampedAngle);  // Apply rotation to the knob
         return clampedAngle;
     }
 
-    // Convert the rotation angle to a coordinate value (e.g., between -5 and +5)
+    // Convert the rotation angle to a coordinate value (now -9 to +9)
     private int CalculateCoordinate(float angle)
     {
-        float t = Mathf.InverseLerp(minAngle, maxAngle, angle);  // Normalize angle to 0-1
-        return Mathf.RoundToInt(Mathf.Lerp(minCoordinate, maxCoordinate, t));  // Map to coordinate range
+        float t = Mathf.InverseLerp(minAngle, maxAngle, angle);  // Normalize angle to a 0-1 value
+        return Mathf.RoundToInt(Mathf.Lerp(minCoordinate, maxCoordinate, t));  // Map to -9 to +9 range
+    }
+
+    // Update the crosshair's position based on the X and Y coordinates
+    private void UpdateCrosshairPosition(int? xCoordinate, int? yCoordinate)
+    {
+        Vector2 crosshairPos = crosshair.anchoredPosition;
+
+        if (xCoordinate.HasValue)
+        {
+            crosshairPos.x = Mathf.Lerp(-map.rect.width / 2, map.rect.width / 2, (xCoordinate.Value - minCoordinate) / (float)(maxCoordinate - minCoordinate));
+        }
+
+        if (yCoordinate.HasValue)
+        {
+            crosshairPos.y = Mathf.Lerp(-map.rect.height / 2, map.rect.height / 2, (yCoordinate.Value - minCoordinate) / (float)(maxCoordinate - minCoordinate));
+        }
+
+        crosshair.anchoredPosition = crosshairPos;  // Apply the updated position
     }
 }
