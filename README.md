@@ -1,4 +1,4 @@
-# Dystopian Drone Control Game
+# Wings of Peace - Dystopian Drone Control Game
 
 Welcome to the repository for the Wings of Peace, a retro-futuristic game where the player controls a UAV drone for a totalitarian military regime. Your job is to give commands, decode cryptic mission orders, and make difficult moral decisions that impact the war effort and your personal life.
 
