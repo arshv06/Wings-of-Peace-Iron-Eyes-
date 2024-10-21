@@ -4,39 +4,46 @@ using UnityEngine.UI;
 
 public class FaxSystemController : MonoBehaviour
 {
-    // Reference to the Top Secret Page and its text
-    public Text topSecretText;  // The text on the Top Secret page
-    public Animator faxAnimator; // Animator for the Top Secret page animation
-    public Button printButton;   // Button to start printing
-    public Image blinkingLED;    // Blinking LED to indicate communication
-    public Text faxDisplayText;  // Text for the fax display screen
+    // References for the UI elements
+    public Text topSecretText;      // The text on the Top Secret page
+    public Animator faxAnimator;    // Animator for the Top Secret page animation
+    public Button printButton;      // Button to start printing
+    public Image blinkingLED;       // Blinking LED to indicate communication
+    public Text faxDisplayText;     // Text for the fax display screen
 
     // The cryptic message to be printed on the Top Secret page
     private string crypticMessage = "D3c0d3 th3 m3554g3: Launch at N:32.5 E:117.3";
 
-    // LED blink speed
+    // LED blink speed and brightness values
     public float blinkSpeed = 0.5f;
     private bool isBlinking = false;
+    private float brightAlpha = 1f; // Full brightness alpha
+    private float dimAlpha = 0.2f;  // Dim alpha
 
     void Start()
     {
-        // Automatically call ReceiveCommunication when the scene starts
         ReceiveCommunication();
 
         // Set initial display text
         faxDisplayText.text = "Waiting for Communication...";
-        
+
         // Set initial text on the Top Secret page (hidden initially)
-        topSecretText.text = "";
+        topSecretText.text = crypticMessage;  // Set the cryptic message before animation
 
-        // Hide the LED initially
-        blinkingLED.color = new Color(blinkingLED.color.r, blinkingLED.color.g, blinkingLED.color.b, 0);
-
-        // Disable the print button initially
+        // Initially set the LED to dim (with red color intact) and disable the print button
+        SetLEDAlpha(dimAlpha);
         printButton.interactable = false;
 
         // Add listener for the print button
         printButton.onClick.AddListener(StartPrinting);
+    }
+
+    // Set the alpha of the LED without changing the color
+    private void SetLEDAlpha(float alpha)
+    {
+        Color currentColor = blinkingLED.color;
+        currentColor.a = alpha;
+        blinkingLED.color = currentColor;
     }
 
     // Simulate receiving incoming communication
@@ -53,28 +60,31 @@ public class FaxSystemController : MonoBehaviour
 
         // After a few seconds, change the display text and make the print button interactable
         yield return new WaitForSeconds(3);
-        
+
         // Stop blinking and update the display to "Print Ready"
         isBlinking = false;
-        blinkingLED.color = new Color(blinkingLED.color.r, blinkingLED.color.g, blinkingLED.color.b, 0); // Stop LED
+        SetLEDAlpha(dimAlpha);  // Set the LED to dim when blinking stops
         faxDisplayText.text = "Print Ready";
-        
+
         // Enable the print button
         printButton.interactable = true;
     }
 
-    // Coroutine to blink the LED
+    // Coroutine to blink the LED (switch between bright and dim alpha)
     IEnumerator BlinkLED()
     {
         while (isBlinking)
         {
-            // Toggle the LED's visibility by adjusting its alpha channel
-            blinkingLED.color = new Color(blinkingLED.color.r, blinkingLED.color.g, blinkingLED.color.b, blinkingLED.color.a == 0 ? 1 : 0);
+            // Toggle the LED between bright and dim by only adjusting the alpha
+            SetLEDAlpha(blinkingLED.color.a == brightAlpha ? dimAlpha : brightAlpha);
             yield return new WaitForSeconds(blinkSpeed);
         }
+
+        // After blinking, set the LED to remain dim
+        SetLEDAlpha(dimAlpha);
     }
 
-    // Start the printing process
+    // Start the printing process (the animation starts but the message is already pre-printed)
     public void StartPrinting()
     {
         // Disable the print button while printing
@@ -83,30 +93,20 @@ public class FaxSystemController : MonoBehaviour
         // Update the fax display to show "Printing..."
         faxDisplayText.text = "Printing...";
 
-        // Start the animation of the Top Secret page coming out of the fax machine
+        // Play the animation to simulate the page being printed (message already on the page)
         faxAnimator.SetTrigger("PrintPage");
 
-        // Start the coroutine to print the message onto the Top Secret page
-        StartCoroutine(PrintMissionOnPage());
+        // After animation finishes, update the display text
+        StartCoroutine(PrintComplete());
     }
 
-    // Coroutine to print the cryptic message onto the Top Secret page
-    IEnumerator PrintMissionOnPage()
+    // Coroutine to handle printing completion
+    IEnumerator PrintComplete()
     {
-        // Clear the text initially
-        topSecretText.text = "";
+        // Wait until the animation completes (adjust timing based on your animation duration)
+        yield return new WaitForSeconds(2);
 
-        // Wait until the animation is underway (adjust this based on your animation)
-        yield return new WaitForSeconds(1);
-
-        // Type out the cryptic message slowly
-        for (int i = 0; i < crypticMessage.Length; i++)
-        {
-            topSecretText.text += crypticMessage[i];
-            yield return new WaitForSeconds(0.05f); // Adjust typing speed
-        }
-
-        // After the printing is done, update the fax display text to "Print Complete"
+        // After the animation finishes, update the fax display text
         faxDisplayText.text = "Print Complete";
     }
 }
