@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-public class KnobRotation : MonoBehaviour
+public class MinimapKnobRotation : MonoBehaviour
 {
     public RectTransform knobX;  // Reference to the X knob RectTransform
     public RectTransform knobY;  // Reference to the Y knob RectTransform
@@ -13,7 +13,7 @@ public class KnobRotation : MonoBehaviour
     private float minAngle = -135f;  // Minimum rotation angle of the knob
     private float maxAngle = 135f;   // Maximum rotation angle of the knob
     private int minCoordinate = 0;  // Change this to 0
-    private int maxCoordinate = 9;   // Change this to +9
+    private int maxCoordinate = 30;   // Change this to +30
 
     private bool isRotatingX = false;  // Whether the X knob is being rotated
     private bool isRotatingY = false;  // Whether the Y knob is being rotated

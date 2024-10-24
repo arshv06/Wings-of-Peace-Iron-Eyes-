@@ -5,4 +5,5 @@ public class LocationData : ScriptableObject
 {
     public string locationName;   // The name of the location
     public string locationInfo;   // The info or description of the location
+    public Sprite minimapSprite;   // Zoomed image
 }
