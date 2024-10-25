@@ -19,8 +19,12 @@ public class MissileSelectionScreen : MonoBehaviour
     public Color ledOffColor = Color.red;   // Color when the LED is OFF (red)
 
     public RectTransform minimapCrosshair;  // Reference to the mini-map crosshair
-    public Sprite missile1CrosshairSprite;  // Crosshair sprite for Missile 1 (large spread)
-    public Sprite missile2CrosshairSprite;  // Crosshair sprite for Missile 2 (precise target)
+    public Sprite missile1CrosshairSprite;  // Crosshair sprite for Missile 1 (small spread)
+    public Sprite missile2CrosshairSprite;  // Crosshair sprite for Missile 2 (large spread)
+
+    // Updated to smaller sizes
+    public Vector2 missile1CrosshairSize = new Vector2(25f, 25f);  // Reduced size for Missile 1
+    public Vector2 missile2CrosshairSize = new Vector2(50f, 50f);  // Reduced size for Missile 2
 
     private int selectedMissile = 0;  // Store the selected missile (0 = none, 1 = Missile 1, 2 = Missile 2)
     private bool zoomPressed = false;  // To track if zoom button is pressed
@@ -50,7 +54,11 @@ public class MissileSelectionScreen : MonoBehaviour
         missile1LED.color = ledOnColor;
         missile2LED.color = ledOffColor;
 
-        // Enable the zoom button, but don't show the crosshair until zoom is pressed
+        // Set the crosshair sprite for Missile 1 and adjust its size
+        minimapCrosshair.GetComponent<Image>().sprite = missile1CrosshairSprite;
+        minimapCrosshair.sizeDelta = missile1CrosshairSize;  // Set the smaller size for Missile 1
+
+        // Enable the zoom button, but don't show the crosshair yet
         zoomButton.interactable = true;
     }
 
@@ -65,7 +73,11 @@ public class MissileSelectionScreen : MonoBehaviour
         missile1LED.color = ledOffColor;
         missile2LED.color = ledOnColor;
 
-        // Enable the zoom button, but don't show the crosshair until zoom is pressed
+        // Set the crosshair sprite for Missile 2 and adjust its size
+        minimapCrosshair.GetComponent<Image>().sprite = missile2CrosshairSprite;
+        minimapCrosshair.sizeDelta = missile2CrosshairSize;  // Set the larger size for Missile 2
+
+        // Enable the zoom button, but don't show the crosshair yet
         zoomButton.interactable = true;
     }
 
@@ -78,17 +90,6 @@ public class MissileSelectionScreen : MonoBehaviour
 
         // Now show the crosshair based on the selected missile
         minimapCrosshair.gameObject.SetActive(true);
-
-        if (selectedMissile == 1)
-        {
-            // Show Missile 1 crosshair
-            minimapCrosshair.GetComponent<Image>().sprite = missile1CrosshairSprite;
-        }
-        else if (selectedMissile == 2)
-        {
-            // Show Missile 2 crosshair
-            minimapCrosshair.GetComponent<Image>().sprite = missile2CrosshairSprite;
-        }
     }
 
     // Method to hide the crosshair when needed
