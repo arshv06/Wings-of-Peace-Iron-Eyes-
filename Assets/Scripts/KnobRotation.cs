@@ -12,8 +12,11 @@ public class KnobRotation : MonoBehaviour
 
     private float minAngle = -135f;  // Minimum rotation angle of the knob
     private float maxAngle = 135f;   // Maximum rotation angle of the knob
-    private int minCoordinate = 0;  // Change this to 0
+    private int minCoordinate = 0;   // Change this to 0
     private int maxCoordinate = 9;   // Change this to +9
+
+    public int currentBigMapX { get; private set; }  // Public property for X coordinate
+    public int currentBigMapY { get; private set; }  // Public property for Y coordinate
 
     private bool isRotatingX = false;  // Whether the X knob is being rotated
     private bool isRotatingY = false;  // Whether the Y knob is being rotated
@@ -27,18 +30,18 @@ public class KnobRotation : MonoBehaviour
         if (isRotatingX)
         {
             currentAngleX = RotateKnob(knobX, currentAngleX);
-            int xCoordinate = CalculateCoordinate(currentAngleX);
-            xDisplay.text = xCoordinate.ToString();  // Update the X display
-            UpdateCrosshairPosition(xCoordinate, yCoordinate: null);  // Update crosshair X
+            currentBigMapX = CalculateCoordinate(currentAngleX);  // Update X coordinate
+            xDisplay.text = currentBigMapX.ToString();  // Update the X display
+            UpdateCrosshairPosition(currentBigMapX, yCoordinate: null);  // Update crosshair X
         }
 
         // Handle Y knob rotation
         if (isRotatingY)
         {
             currentAngleY = RotateKnob(knobY, currentAngleY);
-            int yCoordinate = CalculateCoordinate(currentAngleY);
-            yDisplay.text = yCoordinate.ToString();  // Update the Y display
-            UpdateCrosshairPosition(xCoordinate: null, yCoordinate);  // Update crosshair Y
+            currentBigMapY = CalculateCoordinate(currentAngleY);  // Update Y coordinate
+            yDisplay.text = currentBigMapY.ToString();  // Update the Y display
+            UpdateCrosshairPosition(xCoordinate: null, currentBigMapY);  // Update crosshair Y
         }
     }
 
@@ -76,11 +79,11 @@ public class KnobRotation : MonoBehaviour
         return clampedAngle;
     }
 
-    // Convert the rotation angle to a coordinate value (now -9 to +9)
+    // Convert the rotation angle to a coordinate value (now 0 to 9)
     private int CalculateCoordinate(float angle)
     {
         float t = Mathf.InverseLerp(minAngle, maxAngle, angle);  // Normalize angle to a 0-1 value
-        return Mathf.RoundToInt(Mathf.Lerp(minCoordinate, maxCoordinate, t));  // Map to -9 to +9 range
+        return Mathf.RoundToInt(Mathf.Lerp(minCoordinate, maxCoordinate, t));  // Map to 0 to 9 range
     }
 
     // Update the crosshair's position based on the X and Y coordinates

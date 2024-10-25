@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 453867bcebd5c0e4483750880daa8c1f, type: 3}
-  m_Name: MartyrSouthData
+  m_Name: MartyrNorthData
   m_EditorClassIdentifier: 
-  locationName: Martyr Square S
-  locationInfo: Red Light
+  locationName: Martyr Square N
+  locationInfo: Always Busy
+  minimapSprite: {fileID: 21300000, guid: 465dc680ade09d349891df6c10483040, type: 3}

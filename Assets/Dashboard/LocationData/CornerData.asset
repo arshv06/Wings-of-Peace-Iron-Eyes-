@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 453867bcebd5c0e4483750880daa8c1f, type: 3}
-  m_Name: MartyrNorthData
+  m_Name: CornerData
   m_EditorClassIdentifier: 
-  locationName: Martyr Square N
-  locationInfo: Always Busy
+  locationName: Fish Corner
+  locationInfo: Smells like fishes
+  minimapSprite: {fileID: 21300000, guid: c96098350c6c43e40a6e015b964ede6a, type: 3}
